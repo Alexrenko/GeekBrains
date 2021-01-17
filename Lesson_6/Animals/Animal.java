@@ -1,9 +1,10 @@
-package FirstSemestr.SixthLesson;
+package FirstSemestr.SixthLesson.Animals;
 
 public abstract class Animal {
-
     private static int animalCount;
     private String name;
+    protected int maxRunLength;
+    protected int maxSwimLength;
 
     public Animal(String name) {
         this.name = name;

@@ -1,5 +1,9 @@
 package FirstSemestr.SixthLesson;
 
+import FirstSemestr.SixthLesson.Animals.Animal;
+import FirstSemestr.SixthLesson.Animals.Cat;
+import FirstSemestr.SixthLesson.Animals.Dog;
+
 public class Main {
     public static void main(String[] args) {
         showHomework();
@@ -24,7 +28,7 @@ public class Main {
         matroskin.swim(10);
 
         System.out.println("Количество животных: " + Animal.getAnimalCount());
-        System.out.println("Количество котов: " + Cat.catCount);
-        System.out.println("Количество собак: " + Dog.dogCount);
+        System.out.println("Количество котов: " + Cat.getCatCount());
+        System.out.println("Количество собак: " + Dog.getDogCount());
     }
 }
