@@ -1,8 +1,8 @@
 package FirstSemestr.SixthLesson;
 
-import FirstSemestr.SixthLesson.Animals.Animal;
-import FirstSemestr.SixthLesson.Animals.Cat;
-import FirstSemestr.SixthLesson.Animals.Dog;
+import FirstSemestr.SixthLesson.Animals.*;
+
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
@@ -10,25 +10,27 @@ public class Main {
     }
 
     public static void showHomework() {
-        Dog sharik = new Dog("Шарик");
-        Cat matroskin = new Cat("Матроскин");
+        AnimalFactory factoryOne = new AnimalFactory();
+        AnimalFactory factoryTwo = new AnimalFactory();
+        for (int i = 0; i < 10; i++) {
+            factoryOne.createCat();
+            factoryOne.createDog();
+        }
+        ArrayList<Animal> animals = new ArrayList<>();
+        for (int i = 0; i < 20; i++) {
+               animals.add(factoryTwo.createCat());
+               animals.add(factoryTwo.createDog());
+        }
 
-        sharik.run(100);
-        sharik.run(99999999);
-        sharik.run(-555);
+        System.out.println("На первой фабрике, всего животных: " + factoryOne.getAnimalCount());
+        System.out.println("На первой фабрике, котов: " + factoryOne.getCatCount());
+        System.out.println("На первой фабрике, собак: " + factoryOne.getDogCount());
 
-        sharik.swim(5);
-        sharik.swim(99999999);
-        sharik.swim(-555);
+        System.out.println("На второй фабрике, всего животных: " + factoryTwo.getAnimalCount());
+        System.out.println("На второй фабрике, котов: " + factoryTwo.getCatCount());
+        System.out.println("На второй фабрике, собак: " + factoryTwo.getDogCount());
 
-        matroskin.run(100);
-        matroskin.run(99999999);
-        matroskin.run(-555);
-
-        matroskin.swim(10);
-
-        System.out.println("Количество животных: " + Animal.getAnimalCount());
-        System.out.println("Количество котов: " + Cat.getCatCount());
-        System.out.println("Количество собак: " + Dog.getDogCount());
+        animals.get(0).run(1000);
+        animals.get(1).swim(50);
     }
 }
