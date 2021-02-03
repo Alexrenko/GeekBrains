@@ -1,5 +1,10 @@
 package FirstSemestr.Java2.Lesson_1;
 
+import FirstSemestr.Java2.Lesson_1.ObstacleDevil.DevilBridge;
+import FirstSemestr.Java2.Lesson_1.ObstacleGTO.GTOBridge;
+import FirstSemestr.Java2.Lesson_1.ObstacleGTO.GTOLabyrinth;
+import FirstSemestr.Java2.Lesson_1.ObstacleGTO.GTOWall;
+
 public class Main {
     public static void main(String[] args) {
 
@@ -7,17 +12,21 @@ public class Main {
 
         Team teamBeavers = recruitTeam();
 
+        course.getDescription();
+
         course.dolt(teamBeavers);
 
         teamBeavers.showResult();
+
+
     }
 
     private static Course buildCourse() {
         Course c = new Course();
-        c.addObstacle(new Obstacle("Лабиринт", 8));
-        c.addObstacle(new Obstacle("Стена", 9));
-        c.addObstacle(new Obstacle("Развушенный мост", 12));
-        c.addObstacle(new Obstacle("Вал", 14));
+        c.addObstacle(new GTOLabyrinth());
+        c.addObstacle(new GTOWall());
+        c.addObstacle(new GTOBridge());
+        c.addObstacle(new DevilBridge());
         return c;
     }
 

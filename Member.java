@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Member {
     private String name;
     private int speed;
+    private int health;
     private int lastResult;
 
 

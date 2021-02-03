@@ -15,4 +15,12 @@ public class Course {
         obstacles.add(obstacle);
     }
 
+    public void getDescription() {
+        System.out.println("Описание препятствий:");
+        for (int i = 0; i < obstacles.size(); i++) {
+            System.out.printf("\t препятствие %d: ", i + 1);
+            System.out.println(obstacles.get(i).getDescription());
+        }
+        System.out.println();
+    }
 }

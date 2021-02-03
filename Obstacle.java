@@ -1,20 +1,9 @@
 package FirstSemestr.Java2.Lesson_1;
 
-public class Obstacle {
+public interface Obstacle {
 
-    private String name;
-    private int complexity;
+    public int getComplexity();
 
-    public Obstacle(String name, int complexity) {
-        this.name = name;
-        this.complexity = complexity;
-    }
+    public String getDescription();
 
-    public String getName() {
-        return name;
-    }
-
-    public int getComplexity() {
-        return complexity;
-    }
 }
