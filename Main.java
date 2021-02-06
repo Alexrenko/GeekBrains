@@ -37,7 +37,7 @@ public class Main {
             for (int n = 0; n < inputArray[m].length; n++) {
                 try {
                     sum += Integer.parseInt(inputArray[m][n]);
-                } catch (Exception ex) {
+                } catch (NumberFormatException ex) {
                     throw new MyArrayDataException(String.format(
                             "Ошибка преобразования в число. Значение в ячейке [%d][%d] - \"%s\"",
                             m, n, inputArray[m][n]), ex);
