@@ -3,7 +3,7 @@ package FirstSemestr.Java2.Lesson_2;
 public class Main {
     public static void main(String[] args) {
 
-        String[][] myArray = getStringMatrix(4, 4);
+        String[][] myArray = getStringMatrix(4, 3);
         //myArray[2][3] = "пять";
         printMatrix(myArray);
 
@@ -47,11 +47,19 @@ public class Main {
     }
 
     private static void checkSize(String[][] inputArray) throws MyArraySizeException {
-        int m = inputArray.length;
-        int n = inputArray[0].length;
-        if (m != 4 || n != 4) {
+        int suitableSizeM = 4;
+        int suitableSizeN = 4;
+
+        if (inputArray.length == suitableSizeM) {
+            for (String[] strings : inputArray) {
+                if (strings.length != suitableSizeN) {
+                    throw new MyArraySizeException(String.format(
+                            "Неподходящий размер массива. Столбцов в массиве - %d", strings.length));
+                }
+            }
+        } else {
             throw new MyArraySizeException(String.format(
-                    "Неподходящий размер массива: m = %d, n = %d", m, n));
+                    "Неподходящий размер массива. В массиве %d строки.", inputArray.length));
         }
     }
 
