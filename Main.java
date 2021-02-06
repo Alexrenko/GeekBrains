@@ -3,8 +3,8 @@ package FirstSemestr.Java2.Lesson_2;
 public class Main {
     public static void main(String[] args) {
 
-        String[][] myArray = getStringMatrix(4, 3);
-        //myArray[2][3] = "пять";
+        String[][] myArray = getStringMatrix(4, 4);
+        myArray[2][3] = "пять";
         printMatrix(myArray);
 
         try {
@@ -31,9 +31,10 @@ public class Main {
 
     public static int getSumArray(String[][] inputArray) throws MyArrayDataException, MyArraySizeException {
         checkSize(inputArray);
+
         int sum = 0;
         for (int m = 0; m < inputArray.length; m++) {
-            for (int n = 0; n < inputArray[0].length; n++) {
+            for (int n = 0; n < inputArray[m].length; n++) {
                 try {
                     sum += Integer.parseInt(inputArray[m][n]);
                 } catch (Exception ex) {
@@ -47,20 +48,22 @@ public class Main {
     }
 
     private static void checkSize(String[][] inputArray) throws MyArraySizeException {
-        int suitableSizeM = 4;
-        int suitableSizeN = 4;
-
-        if (inputArray.length == suitableSizeM) {
-            for (String[] strings : inputArray) {
-                if (strings.length != suitableSizeN) {
-                    throw new MyArraySizeException(String.format(
-                            "Неподходящий размер массива. Столбцов в массиве - %d", strings.length));
-                }
-            }
-        } else {
-            throw new MyArraySizeException(String.format(
-                    "Неподходящий размер массива. В массиве %d строки.", inputArray.length));
+        checkSizeCondition(inputArray);
+        for (int i = 0; i < inputArray.length; i++) {
+            checkSizeCondition(inputArray[i]);
         }
+    }
+
+    private static void checkSizeCondition(String[] inputArray) throws MyArraySizeException {
+        int suitableSize = 4;
+        if (inputArray.length != suitableSize)
+            throw new MyArraySizeException("Неподходящий размер массива.");
+    }
+
+    private static void checkSizeCondition(String[][] inputArray) throws MyArraySizeException {
+        int suitableSize = 4;
+        if (inputArray.length != suitableSize)
+            throw new MyArraySizeException("Неподходящий размер массива.");
     }
 
     private static void printMatrix(String[][] inputArray) {
