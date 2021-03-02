@@ -22,6 +22,7 @@ public class ClientHandler {
     private final DataInputStream in;
     private final DataOutputStream out;
     private String name;
+    private boolean isAuth;
 
     public ClientHandler(Socket socket, Server server) {
         try {
@@ -60,7 +61,9 @@ public class ClientHandler {
     }
 
     private void doAuth() throws IOException {
+
         while (true) {
+            timeOut(120);
             String input = in.readUTF();
             if (input.startsWith("-auth")) {
                 String[] credentioals = input.split("\\s");
@@ -72,6 +75,7 @@ public class ClientHandler {
                         name = maybeAuthEntry.getNickname();
                         server.broadcast(name + " logged in.");
                         server.subscribe(this);
+                        isAuth = true;
                         return;
                     } else {
                         sendMessage("Current user is already logged-in");
@@ -85,6 +89,26 @@ public class ClientHandler {
         }
     }
 
+    private void timeOut(int seconds) {
+        new Thread(() -> {
+            try {
+                Thread.sleep(seconds * 1000);
+                if (!isAuth) {
+                    if (!socket.isClosed()) {
+                        sendMessage("Time out.");
+                        in.close();
+                        out.close();
+                        socket.close();
+                    }
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                throw new RuntimeException("SWW", e);
+            }
+        }).start();
+    }
+
     public void readMessage() throws IOException {
         while (true) {
             String message = in.readUTF();
@@ -93,6 +117,7 @@ public class ClientHandler {
             } else if (message.startsWith("-exit")){
                 server.broadcast(name + " logged off.");
                 server.unsubscribe(this);
+                isAuth = false;
                 break;
             } else {
                 server.broadcast(name + ": " + message);

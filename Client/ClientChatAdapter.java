@@ -4,6 +4,8 @@ import FirstSemestr.Java2.Lesson_7_8.Client.GUI.ClientChatFrame;
 import FirstSemestr.Java2.Lesson_7_8.Client.Network.BasicChatNetwork;
 import FirstSemestr.Java2.Lesson_7_8.Client.Network.ClientNetwork;
 
+import java.io.EOFException;
+import java.io.IOException;
 import java.util.function.Consumer;
 
 public class ClientChatAdapter {
@@ -25,10 +27,13 @@ public class ClientChatAdapter {
 
     private void receive() {
         new Thread(()-> {
-            while (true) {
-                frame.append(network.receive());
+            try {
+                while (true) {
+                    frame.append(network.receive());
+                }
+            } catch (EOFException e) {
+                frame.append("Disconnected.");
             }
-
         }).
                 start();
     }

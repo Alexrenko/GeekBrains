@@ -24,16 +24,18 @@ public class BasicChatNetwork implements ClientNetwork {
         try {
             out.writeUTF(message);
         } catch (SocketException e) {
-            throw new RuntimeException("SWW with client socket", e);
+            throw new RuntimeException("SWW with socket", e);
         } catch (IOException e) {
             throw new RuntimeException("SWW during send", e);
         }
     }
 
     @Override
-    public String receive() {
+    public String receive() throws EOFException {
         try {
             return in.readUTF();
+        } catch (EOFException e) {
+            throw new EOFException();
         } catch (IOException e) {
             throw new RuntimeException("SWW during receive", e);
         }
