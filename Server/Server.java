@@ -18,7 +18,7 @@ public class Server {
     public Server() {
         authenticationService = new AuthenticationService();
         handlers = new HashSet<>();
-        try {;
+        try {
             serverSocket = new ServerSocket(8989);
             init();
         } catch (IOException e) {
@@ -34,6 +34,10 @@ public class Server {
             System.out.println("Client accepted " + client);
             new ClientHandler(client, this);
         }
+    }
+
+    public void disconnectedMessage(Socket clientSocket) {
+        System.out.println("client disconnected " + clientSocket.toString());
     }
 
     public AuthenticationService getAuthenticationService() {

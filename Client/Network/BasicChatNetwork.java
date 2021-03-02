@@ -24,11 +24,7 @@ public class BasicChatNetwork implements ClientNetwork {
         try {
             out.writeUTF(message);
         } catch (SocketException e) {
-            try {
-                out.close();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
+            throw new RuntimeException("SWW with client socket", e);
         } catch (IOException e) {
             throw new RuntimeException("SWW during send", e);
         }
@@ -38,15 +34,8 @@ public class BasicChatNetwork implements ClientNetwork {
     public String receive() {
         try {
             return in.readUTF();
-        } catch (EOFException e) {
-            try {
-                in.close();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
         } catch (IOException e) {
             throw new RuntimeException("SWW during receive", e);
         }
-        return null;
     }
 }
