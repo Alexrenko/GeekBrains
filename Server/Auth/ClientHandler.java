@@ -31,62 +31,94 @@ public class ClientHandler {
             this.in = new DataInputStream(socket.getInputStream());
             this.out = new DataOutputStream(socket.getOutputStream());
 
-            new Thread(this::listen).start();
+            new Thread(() -> {
+                try {
+                    listen();
+                } catch (SocketException e) {
+                    server.disconnectedMessage(socket);
+                    server.broadcast(name, name + " logged off.", true);
+                    server.unsubscribe(this);
+                } catch (IOException e) {
+                    throw new RuntimeException("SWW", e);
+                }
+            }).start();
 
         } catch (IOException e) {
             throw new RuntimeException("SWW", e);
         }
     }
 
-    private void listen(){
+    private void listen() throws IOException{
         try {
             while (true) {
-                doAuth();
+                Authentication();
                 readMessage();
             }
-        }catch (SocketException e) {
-            try {
-                in.close();
-                out.close();
-                socket.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            server.disconnectedMessage(socket);
-        } catch (EOFException e) {
-            server.disconnectedMessage(socket);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } finally {
+            in.close();
+            out.close();
+            socket.close();
         }
     }
 
-    private void doAuth() throws IOException {
-
+    private void Authentication() throws IOException {
         while (true) {
             timeOut(120);
-            String input = in.readUTF();
-            if (input.startsWith("-auth")) {
-                String[] credentioals = input.split("\\s");
-                AuthEntry maybeAuthEntry = server.getAuthenticationService()
-                        .findUserByCredentials(credentioals[1], credentioals[2]);
-                if (maybeAuthEntry != null) {
-                    if (server.isNicknameFree(maybeAuthEntry.getNickname())) {
-                        sendMessage("CMD: auth is OK");
-                        name = maybeAuthEntry.getNickname();
-                        server.broadcast(name + " logged in.");
-                        server.subscribe(this);
-                        isAuth = true;
-                        return;
-                    } else {
-                        sendMessage("Current user is already logged-in");
-                    }
-                }else {
-                    sendMessage("Unknown user. Incorrect login/password");
+            String inputMessage = in.readUTF();
+            if (inputMessage.startsWith("-auth")) {
+                AuthEntry entry = checkLogin(inputMessage);
+                if (entry != null) {
+                    signIn(entry);
+                    return;
                 }
             } else {
                 sendMessage("Invalid authentication request.");
             }
         }
+    }
+
+    private AuthEntry checkLogin(String inputMessage) {
+        String[] creds = getCreds(inputMessage);
+        if (creds != null) {
+            AuthEntry entry = checkAuthEntry(creds[1], creds[2]);
+            if (entry != null) {
+                return entry;
+            }
+        }
+        return null;
+    }
+
+    private String[] getCreds(String inputMessage) {
+        String[] creds = inputMessage.split("\\s");
+        if (creds.length >= 3) {
+            return creds;
+        } else {
+            sendMessage("Invalid authentication request.");
+        }
+        return null;
+    }
+
+    private AuthEntry checkAuthEntry(String login, String password) {
+        AuthEntry maybeAuthEntry = server.getAuthenticationService()
+                .findUserByCredentials(login, password);
+        if (maybeAuthEntry != null) {
+            if (server.isNicknameFree(maybeAuthEntry.getNickname())) {
+                return maybeAuthEntry;
+            } else {
+                sendMessage("Current user is already logged-in");
+            }
+        }else {
+            sendMessage("Unknown user. Incorrect login/password");
+        }
+        return null;
+    }
+
+    private void signIn(AuthEntry authEntry) {
+        name = authEntry.getNickname();
+        sendMessage(name + ", welcome to the Chat");
+        server.broadcast(name, name + " logged in.", true);
+        server.subscribe(this);
+        isAuth = true;
     }
 
     private void timeOut(int seconds) {
@@ -114,15 +146,32 @@ public class ClientHandler {
             String message = in.readUTF();
             if (message.startsWith("/w")) {
                 sendPersonalMessage(message);
+            } else if (message.startsWith("-change")){
+                changeLogin(message);
             } else if (message.startsWith("-exit")){
-                server.broadcast(name + " logged off.");
-                server.unsubscribe(this);
-                isAuth = false;
+                exit();
                 break;
             } else {
-                server.broadcast(name + ": " + message);
+                server.broadcast(name, name + ": " + message, false);
             }
         }
+    }
+
+    private void changeLogin(String message) {
+        AuthEntry entry = checkLogin(message);
+        if (entry != null) {
+            String lastName = name;
+            name = entry.getNickname();
+            sendMessage("You changed your nickname to " + name + ".");
+            server.broadcast(name, lastName + " changed his nickname to " + name + ".", true);
+        }
+    }
+
+    private void exit() {
+        server.broadcast(name, name + " logged off.", true);
+        server.unsubscribe(this);
+        isAuth = false;
+        sendMessage("You are out of chat.");
     }
 
     private void sendPersonalMessage(String message) {

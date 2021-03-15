@@ -1,20 +1,58 @@
 package FirstSemestr.Java2.Lesson_7_8.Server.Auth;
 
-import java.util.Set;
+import java.sql.*;
+import java.util.ArrayList;
 
 public class AuthenticationService {
-    private static final Set<AuthEntry> entries = Set.of(
-            new AuthEntry("l1", "p1", "Nickname1"),
-            new AuthEntry("l2", "p2", "Nickname2"),
-            new AuthEntry("l3", "p3", "Nickname3")
-    );
 
     public AuthEntry findUserByCredentials(String login, String password) {
-        for (AuthEntry entry : entries) {
-            if (entry.getLogin().equals(login) && entry.getPassword().equals(password)) {
+        String path = "C:\\DataBases\\AuthDB.db";
+        try {
+            ArrayList<AuthEntry> users = getUsersFromDB(path, login);
+            for (AuthEntry entry : users) {
+                if (login.equals(entry.getLogin()) && password.equals(entry.getPassword())) {
                 return entry;
             }
         }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
         return null;
+    }
+
+    private ArrayList<AuthEntry> getUsersFromDB(String DBPath, String login) throws SQLException {
+        Connection conn = null;
+        Statement stmt = null;
+        ResultSet rs = null;
+        ArrayList<AuthEntry> users = new ArrayList<>();
+        String sqlQuery = String.format("SELECT * FROM Users WHERE Login = '%s'", login);
+
+        try {
+            Class.forName("org.sqlite.JDBC");
+            conn = DriverManager.getConnection("jdbc:sqlite:" + DBPath);
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sqlQuery);
+            if (rs != null) {
+                while (rs.next()) {
+                    String dbLogin = rs.getString("Login");
+                    String dbPassword = rs.getString("Password");
+                    String dbNickname = rs.getString("Nickname");
+                    users.add(new AuthEntry(dbLogin, dbPassword, dbNickname));
+                }
+            }
+            return users;
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            try{
+                rs.close();
+                stmt.close();
+                conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

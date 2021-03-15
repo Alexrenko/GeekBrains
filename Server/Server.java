@@ -30,9 +30,9 @@ public class Server {
     private void init() throws IOException {
         while (true) {
             System.out.println("Server is waiting for a connection...");
-            Socket client = serverSocket.accept();
-            System.out.println("Client accepted " + client);
-            new ClientHandler(client, this);
+            Socket socket = serverSocket.accept();
+            System.out.println("Client accepted " + socket);
+            new ClientHandler(socket, this);
         }
     }
 
@@ -53,9 +53,15 @@ public class Server {
         return true;
     }
 
-    public synchronized void broadcast(String message) throws IOException {
+    public synchronized void broadcast(String name, String message, boolean SystemMessage) {
         for (ClientHandler handler : handlers) {
-            handler.sendMessage(message);
+            if (!handler.getName().equals(name)) {
+                if (SystemMessage) {
+                    handler.sendMessage(message);
+                } else {
+                    handler.sendMessage('\t' + message);
+                }
+            }
         }
     }
 
