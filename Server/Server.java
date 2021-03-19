@@ -1,7 +1,7 @@
-package FirstSemestr.Java2.Lesson_7_8.Server;
+package FirstSemestr.Chat.Server;
 
-import FirstSemestr.Java2.Lesson_7_8.Server.Auth.AuthenticationService;
-import FirstSemestr.Java2.Lesson_7_8.Server.Auth.ClientHandler;
+import FirstSemestr.Chat.Server.Auth.AuthenticationService;
+import FirstSemestr.Chat.Server.Auth.ClientHandler;
 
 
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package FirstSemestr.Java2.Lesson_7_8.Client.Network;
+package FirstSemestr.Chat.Client.Network;
 
 import java.io.EOFException;
 

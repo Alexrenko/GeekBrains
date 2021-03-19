@@ -1,4 +1,4 @@
-package FirstSemestr.Java2.Lesson_7_8.Client.GUI;
+package FirstSemestr.Chat.Client.GUI;
 
 import javax.swing.*;
 import java.awt.*;

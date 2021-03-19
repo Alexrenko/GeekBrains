@@ -1,4 +1,4 @@
-package FirstSemestr.Java2.Lesson_7_8.Server.Auth;
+package FirstSemestr.Chat.Server.Auth;
 
 import java.sql.*;
 import java.util.ArrayList;

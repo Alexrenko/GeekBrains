@@ -1,6 +1,8 @@
-package FirstSemestr.Java2.Lesson_7_8;
+package FirstSemestr.Chat;
 
-import FirstSemestr.Java2.Lesson_7_8.Client.ClientChatAdapter;
+import FirstSemestr.Chat.Client.ClientChatAdapter;
+
+import java.io.IOException;
 
 public class ClientOne {
     public static void main(String[] args) {

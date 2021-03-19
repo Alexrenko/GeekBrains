@@ -1,17 +1,15 @@
-package FirstSemestr.Java2.Lesson_7_8.Client;
+package FirstSemestr.Chat.Client;
 
-import FirstSemestr.Java2.Lesson_7_8.Client.GUI.ClientChatFrame;
-import FirstSemestr.Java2.Lesson_7_8.Client.Network.BasicChatNetwork;
-import FirstSemestr.Java2.Lesson_7_8.Client.Network.ClientNetwork;
+import FirstSemestr.Chat.Client.GUI.ClientChatFrame;
+import FirstSemestr.Chat.Client.Network.BasicChatNetwork;
+import FirstSemestr.Chat.Client.Network.ClientNetwork;
 
-import java.io.EOFException;
-import java.io.IOException;
+import java.io.*;
 import java.util.function.Consumer;
 
 public class ClientChatAdapter {
     private final ClientNetwork network;
     private final ClientChatFrame frame;
-
 
     public ClientChatAdapter(String host, int port) {
         this.network = new BasicChatNetwork(host, port);
@@ -29,7 +27,8 @@ public class ClientChatAdapter {
         new Thread(()-> {
             try {
                 while (true) {
-                    frame.append(network.receive());
+                    String str = network.receive();
+                    frame.append(str);
                 }
             } catch (EOFException e) {
                 frame.append("Disconnected.");
@@ -38,3 +37,4 @@ public class ClientChatAdapter {
                 start();
     }
 }
+

@@ -1,4 +1,4 @@
-package FirstSemestr.Java2.Lesson_7_8.Server;
+package FirstSemestr.Chat.Server;
 
 public class Main {
     public static void main(String[] args) {

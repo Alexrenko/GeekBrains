@@ -1,6 +1,6 @@
-package FirstSemestr.Java2.Lesson_7_8.Server.Auth;
+package FirstSemestr.Chat.Server.Auth;
 
-import FirstSemestr.Java2.Lesson_7_8.Server.Server;
+import FirstSemestr.Chat.Server.Server;
 
 import java.io.*;
 import java.net.Socket;
@@ -14,6 +14,8 @@ import java.net.SocketException;
  * 5. Broadcast message upon success login + basic message
  * 6. Send a personal message
  * 7. Exclusion from chat by key "-exit"
+ * 8. Change nickname by key "-change"
+ * 9. keeping client history
  */
 
 public class ClientHandler {
@@ -23,6 +25,9 @@ public class ClientHandler {
     private final DataOutputStream out;
     private String name;
     private boolean isAuth;
+    private File logFile;
+    private boolean isLogging;
+    private final int requiredLogLines = 100;
 
     public ClientHandler(Socket socket, Server server) {
         try {
@@ -113,12 +118,16 @@ public class ClientHandler {
         return null;
     }
 
-    private void signIn(AuthEntry authEntry) {
+    private void signIn(AuthEntry authEntry) throws IOException {
         name = authEntry.getNickname();
+        logFile = new File("history_" + name + ".txt");
+        logFile.createNewFile();
+        sendMessage(getLogLines());
         sendMessage(name + ", welcome to the Chat");
         server.broadcast(name, name + " logged in.", true);
         server.subscribe(this);
         isAuth = true;
+        isLogging = true;
     }
 
     private void timeOut(int seconds) {
@@ -144,6 +153,9 @@ public class ClientHandler {
     public void readMessage() throws IOException {
         while (true) {
             String message = in.readUTF();
+            if (isLogging) {
+                writeLog(message);
+            }
             if (message.startsWith("/w")) {
                 sendPersonalMessage(message);
             } else if (message.startsWith("-change")){
@@ -154,6 +166,74 @@ public class ClientHandler {
             } else {
                 server.broadcast(name, name + ": " + message, false);
             }
+        }
+    }
+
+    public void sendMessage(String message) {
+        try {
+            out.writeUTF(message);
+            if (isLogging) {
+                writeLog(message);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendPersonalMessage(String message) {
+        String[] arrMessage = message.split("\\s");
+        if (server.isNicknameFree(arrMessage[1])) {
+            sendMessage(arrMessage[1] + " isn`t registered in the chat.");
+        } else {
+            String newMessage = "";
+            for (int i = 2; i < arrMessage.length; i++) {
+                newMessage += arrMessage[i] + " ";
+            }
+            server.send(arrMessage[1], newMessage);
+            if (isLogging) {
+                writeLog(newMessage);
+            }
+        }
+    }
+
+    private void writeLog(String message) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true))){
+            if (logFile.length() == 0) {
+                writer.write(message);
+            } else {
+                writer.write('\n' + message);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String readLog(File file) {
+        String logFile = "";
+        try (FileReader reader = new FileReader(file)) {
+            int c;
+            while ((c = reader.read()) != -1) {
+                logFile += ((char) c);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException("SWW during read log", e);
+        }
+        return logFile;
+    }
+
+    private String getLogLines() {
+        String outputLines = "";
+        String log = readLog(logFile);
+        String[] allLines = log.split("\n");
+        if (allLines.length > requiredLogLines) {
+            for (int i = requiredLogLines; i > 0 ; i--) {
+                outputLines += allLines[allLines.length - i] + '\n';
+            }
+            return outputLines;
+        } else {
+            return log;
         }
     }
 
@@ -174,28 +254,9 @@ public class ClientHandler {
         sendMessage("You are out of chat.");
     }
 
-    private void sendPersonalMessage(String message) {
-        String[] arrMessage = message.split("\\s");
-        if (server.isNicknameFree(arrMessage[1])) {
-            sendMessage(arrMessage[1] + " isn`t registered in the chat.");
-        } else {
-            String newMessage = "";
-            for (int i = 2; i < arrMessage.length; i++) {
-                newMessage += arrMessage[i] + " ";
-            }
-            server.send(arrMessage[1], newMessage);
-        }
-    }
-
-    public void sendMessage(String message) {
-        try {
-            out.writeUTF(message);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public String getName() {
         return name;
     }
+
+
 }

@@ -1,9 +1,9 @@
-package FirstSemestr.Java2.Lesson_7_8.Client.GUI;
+package FirstSemestr.Chat.Client.GUI;
 
 
 import java.util.function.Consumer;
 
-public class ClientChatFrame implements ChatFramInteraction {
+public class ClientChatFrame implements ChatFrameInteraction {
     private final ChatFrame chatFrame;
 
     public ClientChatFrame(Consumer<String> messageConsumer) {

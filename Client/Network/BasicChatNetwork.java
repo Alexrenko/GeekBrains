@@ -1,4 +1,4 @@
-package FirstSemestr.Java2.Lesson_7_8.Client.Network;
+package FirstSemestr.Chat.Client.Network;
 
 import java.io.*;
 import java.net.Socket;
@@ -8,6 +8,7 @@ public class BasicChatNetwork implements ClientNetwork {
     private final Socket socket;
     private final DataInputStream in;
     private final DataOutputStream out;
+
 
     public BasicChatNetwork(String host, int port) {
         try {
@@ -40,4 +41,5 @@ public class BasicChatNetwork implements ClientNetwork {
             throw new RuntimeException("SWW during receive", e);
         }
     }
+
 }
