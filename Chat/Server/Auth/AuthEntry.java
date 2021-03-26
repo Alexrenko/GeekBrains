@@ -1,4 +1,4 @@
-package FirstSemestr.Chat.Server.Auth;
+package FirstSemestr.Java3.Lesson_4.Chat_with_ExecutorService.Server.Auth;
 
 import java.util.Objects;
 

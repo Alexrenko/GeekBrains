@@ -1,10 +1,10 @@
-package FirstSemestr.Chat.Client;
+package FirstSemestr.Java3.Lesson_4.Chat_with_ExecutorService.Client;
 
-import FirstSemestr.Chat.Client.GUI.ClientChatFrame;
-import FirstSemestr.Chat.Client.Network.BasicChatNetwork;
-import FirstSemestr.Chat.Client.Network.ClientNetwork;
+import FirstSemestr.Java3.Lesson_4.Chat_with_ExecutorService.Client.GUI.ClientChatFrame;
+import FirstSemestr.Java3.Lesson_4.Chat_with_ExecutorService.Client.Network.BasicChatNetwork;
+import FirstSemestr.Java3.Lesson_4.Chat_with_ExecutorService.Client.Network.ClientNetwork;
 
-import java.io.*;
+import java.io.EOFException;
 import java.util.function.Consumer;
 
 public class ClientChatAdapter {

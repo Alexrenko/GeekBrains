@@ -1,22 +1,26 @@
-package FirstSemestr.Chat.Server;
+package FirstSemestr.Java3.Lesson_4.Chat_with_ExecutorService.Server;
 
-import FirstSemestr.Chat.Server.Auth.AuthenticationService;
-import FirstSemestr.Chat.Server.Auth.ClientHandler;
-
+import FirstSemestr.Java3.Lesson_4.Chat_with_ExecutorService.Server.Auth.AuthenticationService;
+import FirstSemestr.Java3.Lesson_4.Chat_with_ExecutorService.Server.Auth.ClientHandler;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server {
     private final ServerSocket serverSocket;
     private final AuthenticationService authenticationService;
+    private final ExecutorService executorService;
     private final Set<ClientHandler> handlers;
+    private final int numberOfThreads = 2;
 
     public Server() {
         authenticationService = new AuthenticationService();
+        executorService = Executors.newFixedThreadPool(numberOfThreads);
         handlers = new HashSet<>();
         try {
             serverSocket = new ServerSocket(8989);
@@ -24,7 +28,6 @@ public class Server {
         } catch (IOException e) {
             throw new RuntimeException("SWW", e);
         }
-
     }
 
     private void init() throws IOException {
@@ -34,6 +37,10 @@ public class Server {
             System.out.println("Client accepted " + socket);
             new ClientHandler(socket, this);
         }
+    }
+
+    public ExecutorService getExecutorService() {
+        return executorService;
     }
 
     public void disconnectedMessage(Socket clientSocket) {

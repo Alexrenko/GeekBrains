@@ -1,6 +1,6 @@
-package FirstSemestr.Chat.Server.Auth;
+package FirstSemestr.Java3.Lesson_4.Chat_with_ExecutorService.Server.Auth;
 
-import FirstSemestr.Chat.Server.Server;
+import FirstSemestr.Java3.Lesson_4.Chat_with_ExecutorService.Server.Server;
 
 import java.io.*;
 import java.net.Socket;
@@ -36,7 +36,7 @@ public class ClientHandler {
             this.in = new DataInputStream(socket.getInputStream());
             this.out = new DataOutputStream(socket.getOutputStream());
 
-            new Thread(() -> {
+            server.getExecutorService().execute(new Thread(() -> {
                 try {
                     listen();
                 } catch (SocketException e) {
@@ -46,14 +46,14 @@ public class ClientHandler {
                 } catch (IOException e) {
                     throw new RuntimeException("SWW", e);
                 }
-            }).start();
+            }));
 
         } catch (IOException e) {
             throw new RuntimeException("SWW", e);
         }
     }
 
-    private void listen() throws IOException{
+    private void listen() throws IOException {
         try {
             while (true) {
                 Authentication();

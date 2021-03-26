@@ -1,8 +1,6 @@
-package FirstSemestr.Chat;
+package FirstSemestr.Java3.Lesson_4.Chat_with_ExecutorService;
 
-import FirstSemestr.Chat.Client.ClientChatAdapter;
-
-import java.io.IOException;
+import FirstSemestr.Java3.Lesson_4.Chat_with_ExecutorService.Client.ClientChatAdapter;
 
 public class ClientTwo {
     public static void main(String[] args) {
